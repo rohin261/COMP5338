@@ -1,6 +1,14 @@
-Convert String to Int
+//Pre-Processing
 
+//Convert String to Int - ViewCount
 db.posts.find().forEach( function (x) {
 x.ViewCount = parseInt(x.ViewCount);
 db.posts.save(x);
 });
+
+//Convert String to Int - AcceptedAnswerId
+db.posts.find().forEach( function (x) {
+x.AcceptedAnswerId = parseInt(x.AcceptedAnswerId);
+db.posts.save(x);
+});
+
