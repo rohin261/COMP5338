@@ -1,0 +1,6 @@
+Convert String to Int
+
+db.posts.find().forEach( function (x) {
+x.ViewCount = parseInt(x.ViewCount);
+db.posts.save(x);
+});
