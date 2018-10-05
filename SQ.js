@@ -32,3 +32,19 @@ db.posts.aggregate([
 
 	
 ])
+
+
+
+
+
+AQ2
+
+db.posts.aggregate([
+        {$project:{tag:{$split:["$Tags",","]},CreationDate:"$CreationDate"}},
+        {$unwind:"$tag"},
+        {$match:{"CreationDate": {$gte: ISODate("2018-08-01T00:00:00"), $lte:ISODate("2018-08-31T00:00:00")}}},
+        {$group:{_id:{Topic:"$tag"},numOfUser: {$sum:1}}},
+        {$sort:{"numOfUser":-1}},
+        {$limit:5}
+])
+
