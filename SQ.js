@@ -20,9 +20,15 @@ db.posts.aggregate([
 SQ2
 
 db.posts.aggregate([ 
-	{$match:{Tags:"ai-design"}}, 
-	{$project:{_id: "$Id", Title:"$Title", "views":"$ViewCount"}},
-	{$sort: {"views": -1}},
-	{$limit: 1}
+
+	{ $project:
+	  {Tags:{$split:["$Tags", ","] }, //added $split for tags
+	    _id: "$Id", Title:"$Title", "views":"$ViewCount" }
+	},
+	{$match:{Tags:"turing-test"}}, 
+	{$sort: {"views": -1}}
+	{$limit:1}
+
+
 	
 ])
