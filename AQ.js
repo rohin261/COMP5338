@@ -57,12 +57,11 @@ db.posts.aggregate([
       $sort: {
          TimeDifInHours: 1 //Fastest time first
       }
-   } {
+   }, {
       $limit: 1 
    }
 
 ])
-
 //AQ2
 
 db.posts.aggregate([{
