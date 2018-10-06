@@ -12,3 +12,23 @@ x.AcceptedAnswerId = parseInt(x.AcceptedAnswerId);
 db.posts.save(x);
 });
 
+//Convert String to Int - AnswerCount // Faster Method
+var bulkOps = [];
+
+db.posts.find({"AnswerCount": {"$exists": true, "$type": 2 }}).forEach(function (doc) { 
+    var newInt = new NumberInt(doc.AnswerCount);
+    bulkOps.push(         
+        { 
+            "updateOne": { 
+                "filter": { "_id": doc._id } ,              
+                "update": { "$set": { "AnswerCount": newInt } } 
+            }         
+        }           
+    );     
+})
+
+db.posts.bulkWrite(bulkOps, { "ordered": true });
+ 
+//Create Compound Index - Id & AcceptedAnswerId
+
+db.posts.createIndex({Id:1, AcceptedAnswerId:1})
