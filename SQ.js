@@ -55,7 +55,7 @@ db.posts.aggregate([
    },
    {
       $match: {
-         Tags: "turing-test"
+         Tags: "turing-test"//user-input
       }
    },
    {

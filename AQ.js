@@ -102,3 +102,80 @@ db.posts.aggregate([{
       $limit: 5
    }
 ])
+
+//AQ3
+
+db.posts.aggregate([{
+      "$lookup": {
+         "from": "posts",
+         "let": {
+            "answerId": "$AcceptedAnswerId"
+         },
+         "pipeline": [{
+            "$match": {
+               "$expr": {
+                  "$eq": ["$Id", "$$answerId"]
+               }
+            }
+         }],
+         "as": "info"
+      }
+   },
+   {
+      $match: {
+         AcceptedAnswerId: {
+            "$exists": true,
+            "$ne": NaN
+         }
+      }
+   },
+
+   {
+      $project: {
+         tag: {
+            $split: ["$Tags", ","]
+         },
+         OwnerId: {
+            $arrayElemAt: ["$info.OwnerUserId", 0]
+         },
+         QuestionId: "$Id",
+         Questions: "$Title"
+
+
+      }
+   },
+   {
+      $sort: {
+         QuestionId: 1
+      }
+   },
+   {
+      $match: {
+         tag: "deep-learning"
+      }
+   },
+   {
+      $group: {
+         _id: "$OwnerId",
+         count: {
+            $sum: 1
+         },
+         info: {
+            $push: {
+               QuestionId: "$QuestionId",
+               Question: "$Questions"
+            }
+         }
+      }
+   },
+   {
+      $sort: {
+         count: -1
+      }
+   },
+   {
+      $limit: 1
+   },
+
+
+])
