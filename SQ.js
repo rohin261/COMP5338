@@ -10,22 +10,32 @@ db.posts.aggregate([{
    {
       $match: {
          $or: [{
-               ParentId: "2261"
+               ParentId: 2277 //Changed from String to Int because of Pre-Processing function
             },
             {
-               Id: 2261
+               Id: 2277
             }
          ]
       }
    },
+
    {
       $project: {
-         CreationDate: "$UserInfo.CreationDate",
-         DisplayName: "$UserInfo.DisplayName",
-         UpVotes: "$UserInfo.UpVotes",
-         DownVotes: "$UserInfo.DownVotes"
+         CreationDate: {
+            $arrayElemAt: ["$UserInfo.CreationDate", 0]
+         },
+         DisplayName: {
+            $arrayElemAt: ["$UserInfo.DisplayName", 0]
+         },
+         UpVotes: {
+            $arrayElemAt: ["$UserInfo.UpVotes", 0]
+         },
+         DownVotes: {
+            $arrayElemAt: ["$UserInfo.DownVotes", 0]
+         }
       }
    }
+
 
 ])
 
