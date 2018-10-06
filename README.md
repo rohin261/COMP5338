@@ -28,33 +28,3 @@ password: **password1**
 	Password: **password1**\
 	Auth Mechanism: SCRAM-SHA-1
 
-#Simple Query 1 and 2
-[SQ1] Find all users involved in a given question (identified by id) and their respective
-profiles including the creationDate, DisplayName, upVote and DownVote. Note, we
-are only interested in existing users who either posted or answered the question. You
-may ignore users that do not have an id.
-
-db.posts.aggregate([
-{$lookup:{
-from:"users",
-localField:"OwnerUserId",
-foreignField:"Id",
-as:"UserInfo"}},
-{$match:{$or:[{ParentId:"2261"},{Id:2261}]}},
-{$project:{CreationDate:"$UserInfo.CreationDate",DisplayName:"$UserInfo.DisplayName",
- UpVotes:"$UserInfo.UpVotes",DownVotes:"$UserInfo.DownVotes"}}
-
-])
-
-
-• [SQ2] Assuming each tag represents a topic, find the most viewed question in a given
-topiC
-db.posts.aggregate([
-{$match:{Tags:"ai-design"}},
-{$project:{id:"$Id",count:{$toInt:"$ViewCount"}}},
-{$sort: {count:-1} },
-{$limit: 1}
-])
-
-Qustion: Can u use $toInt operator in your mongodb(version4.0 or newver)
-It is wierd that I cannot use it in my laplop, even though my version is 4.0. can u try it, thanx!
