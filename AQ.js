@@ -125,7 +125,7 @@ db.posts.aggregate([{
       $match: {
          AcceptedAnswerId: {
             "$exists": true,
-            "$ne": NaN
+            "$ne": null
          }
       }
    },
@@ -151,7 +151,7 @@ db.posts.aggregate([{
    },
    {
       $match: {
-         tag: "deep-learning"
+         tag: "neural-networks"
       }
    },
    {
