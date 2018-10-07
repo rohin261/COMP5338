@@ -3,7 +3,7 @@ save data in import file of C:\Neo4j\neo4j-community-3.4.8\import\
 
 #input posts
 LOAD CSV WITH HEADERS FROM
-'file:///data/Posts.tsv'AS row
+'file:///data/Posts.tsv'AS line
 FIELDTERMINATOR '\t'
 WITH line
 CREATE (p:posts { Id: line.Id, ParentId: line.ParentId,CreationDate:line.CreationDate,
