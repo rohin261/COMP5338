@@ -53,3 +53,13 @@ CREATE INDEX ON posts(Id)
 MATCH (p:posts),(u:users)
 WHERE p.OwnerUserId = u.Id
 CREATE (u)-[:Create]->(p)
+
+#create question posts
+
+MATCH (p:posts)
+WHERE p.PostTypeId="1"
+create(qustionposts { Id: p.Id, ParentId: p.ParentId,CreationDate:p.CreationDate,
+Title:p.Title,ViewCount:p.ViewCount,AnswerCount:p.AnswerCount,
+OwnerUserId:p.OwnerUserId,FavoriteCount:p.FavoriteCount,
+Tags:p.Tags})
+
