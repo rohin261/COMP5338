@@ -9,6 +9,7 @@ WITH line
 CREATE (p:posts { Id: line.Id, ParentId: line.ParentId,CreationDate:line.CreationDate,
 Title:line.Title,ViewCount:toInteger(line.ViewCount),AnswerCount:toInteger(line.AnswerCount),
 OwnerUserId:line.OwnerUserId,FavoriteCount:toInteger(line.FavoriteCount),
+Tags:split(line.Tags,","),
 PostTypeId:line.PostTypeId,AcceptedAnswerId:line.AcceptedAnswerId})
 RETURN p.Id AS Id, p.ParentId AS ParentId, size(p.Id) AS size
 
