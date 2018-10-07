@@ -42,3 +42,14 @@ CREATE (v:votes { Id: line.Id, PostId:  line.PostId ,
 VoteTypeId:line.VoteTypeI,CreationDate:line.CreationDate,UserId :line.UserId
 
 })
+
+
+
+#Create indexes
+CREATE INDEX ON posts(Id)
+
+#create connection
+
+MATCH (p:posts),(u:users)
+WHERE p.OwnerUserId = u.Id
+CREATE (u)-[:Create]->(p)
