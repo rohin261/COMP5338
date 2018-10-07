@@ -1,0 +1,43 @@
+save data in import file of C:\Neo4j\neo4j-community-3.4.8\import\
+
+
+#input posts
+LOAD CSV WITH HEADERS FROM
+'file:///data/Posts.tsv'AS row
+FIELDTERMINATOR '\t'
+WITH line
+CREATE (p:posts { Id: line.Id, ParentId: line.ParentId,CreationDate:line.CreationDate,
+Title:line.Title,ViewCount:toInteger(line.ViewCount),AnswerCount:toInteger(line.AnswerCount),
+OwnerUserId:line.OwnerUserId,FavoriteCount:toInteger(line.FavoriteCount),
+PostTypeId:line.PostTypeId,AcceptedAnswerId:line.AcceptedAnswerId})
+RETURN p.Id AS Id, p.ParentId AS ParentId, size(p.Id) AS size
+
+#input users 
+LOAD CSV WITH HEADERS FROM
+'file:///data/Users.tsv'AS line
+FIELDTERMINATOR '\t'
+WITH line
+CREATE (u:users { Id: line.Id, DisplayName: line.DisplayName,CreationDate:line.CreationDate,
+UpVotes:toInteger(line.UpVote),DownVotes:toInteger(line.DownVotes)
+})
+RETURN u.Id AS Id, u.DisplayName AS DisplayName
+
+#input tags
+LOAD CSV WITH HEADERS FROM
+'file:///data/Tags.tsv'AS line
+FIELDTERMINATOR '\t'
+WITH line
+CREATE (t:tags { Id: line.Id, TagName:  line.TagName ,
+count:toInteger(line.Count)
+})
+
+
+#input votes
+LOAD CSV WITH HEADERS FROM
+'file:///data/Votes.tsv'AS line
+FIELDTERMINATOR '\t'
+WITH line
+CREATE (v:votes { Id: line.Id, PostId:  line.PostId ,
+VoteTypeId:line.VoteTypeI,CreationDate:line.CreationDate,UserId :line.UserId
+
+})
