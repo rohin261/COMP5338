@@ -1,0 +1,5 @@
+AQ1
+Match (u:users)-[:Create]-(c:posts)		                                                    
+where c.Id="2"	or c.ParentId="2"					                                      
+return u.Id as users,u.creationDate as creationDateu,u.DisplayName as DisplayName,  
+u.UpVotes as UpVotes,u.DownVotes as DownVotes
