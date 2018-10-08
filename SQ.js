@@ -62,7 +62,7 @@ db.posts.aggregate([
       $sort: {
          "views": -1
       }
-   } {
+   }, {
       $limit: 1
    }
 

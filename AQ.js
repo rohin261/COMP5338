@@ -65,43 +65,95 @@ db.posts.aggregate([
 //AQ2
 
 db.posts.aggregate([{
-      $project: {
-         tag: {
-            $split: ["$Tags", ","]
-         },
-         CreationDate: "$CreationDate"
-      }
-   },
-   {
-      $unwind: "$tag"
-   },
-   {
-      $match: {
-         "CreationDate": {
-            $gte: ISODate("2018-08-01T00:00:00"),
-            $lte: ISODate("2018-08-31T00:00:00")
-         }
-      }
-   },
-   {
-      $group: {
-         _id: {
-            Topic: "$tag"
-         },
-         numOfUser: {
-            $sum: 1
-         }
-      }
-   },
-   {
-      $sort: {
-         "numOfUser": -1
-      }
-   },
-   {
-      $limit: 5
-   }
+		$project: {
+			tag: {
+				$split: ["$Tags", ","]
+			},
+			CreationDate: "$CreationDate",
+			AnswerCount: "$AnswerCount",
+			Question: "$Id",
+			Owner: "$OwnerUserId"
+		}
+	},
+	{
+		$unwind: "$tag"
+	},
+
+	{
+		$lookup: {
+			"from": "posts",
+			"let": {
+				"yy": "$Question"
+			},
+			"pipeline": [{
+				"$match": {
+					"$expr": {
+						"$eq": ["$$yy", "$ParentId"]
+					}
+				},
+
+			}],
+			"as": "info"
+		}
+	},
+
+	{
+		$match: {
+			"CreationDate": {
+				$gte: ISODate("2018-08-01T00:00:00"),
+				$lte: ISODate("2018-08-31T00:00:00")
+			}
+		}
+	},
+
+
+	//{
+	// $match:{tag:"machine-learning"}
+	//},
+	//{$unwind:"$info"},
+
+	{
+		$group: {
+			_id: "$tag",
+			OOO: {
+				$addToSet: "$Owner"
+			},
+			Answerer: {
+				$addToSet: "$info.OwnerUserId"
+			}
+		}
+	},
+
+
+	{
+		$project: {
+			FinalTotal: {
+				"$add": [{
+					$size: "$OOO"
+				}, {
+					$size: "$Answerer"
+				}]
+			}
+		}
+	},
+
+	{
+		$project: {
+			Topic: "$tag",
+			TotalUsers: "$FinalTotal"
+		}
+	},
+	{
+		$sort: {
+			TotalUsers: -1
+		}
+	},
+	{
+		$limit: 5
+	}
+
 ])
+
 
 //AQ3
 
@@ -151,7 +203,7 @@ db.posts.aggregate([{
    },
    {
       $match: {
-         tag: "neural-networks"
+         tag: "deep-learning"
       }
    },
    {
@@ -168,9 +220,10 @@ db.posts.aggregate([{
          }
       }
    },
+   {$project:{ChampionUserId:"$_id", TotalAnswers:"$count", AllQuestions:"$info"}},
    {
       $sort: {
-         count: -1
+         TotalAnswers: -1
       }
    },
    {
