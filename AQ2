@@ -9,6 +9,7 @@ db.posts.aggregate([{
    {
       $unwind: "$tag"
    },
+   
   {
       $lookup: {
          "from": "posts",
@@ -35,31 +36,30 @@ db.posts.aggregate([{
          }
       }
    },
-    
 
-{
-   $match:{tag:"reinforcement-learning"}
-},
 
+//{
+// $match:{tag:"machine-learning"}
+//},
 //{$unwind:"$info"},
-{$project:{OwnersId:"$Owner", AnsweredId:"$info.OwnerUserId"}},
-//{$group:{_id:"$tag", OOO:{$addToSet:"$OwnersId"}, Answerer:{$addToSet:"$AnsweredId"}}},
+
+{$group:{_id:"$tag", OOO:{$addToSet:"$Owner"}, Answerer:{$addToSet:"$info.OwnerUserId"}}},
+
       
-//   {$project:{FinalTotal: {
-//      "$add": [{$size:"$OOO"}, {$size:"$Answerer"}]
-//    }}},
-//    
-//  {
-//    $project:{
-//       Topic:"$tag", TotalUsers:"$FinalTotal"
-//    }
-//  },
-//  {
-//    $sort:{TotalUsers:-1}
-//  },
-//   {
-//    $limit:5
-//   }
+   {$project:{FinalTotal: {
+      "$add": [{$size:"$OOO"}, {$size:"$Answerer"}]
+    }}},
+    
+  {
+   $project:{
+      Topic:"$tag", TotalUsers:"$FinalTotal"
+   }
+  },
+  {
+   $sort:{TotalUsers:-1}
+  },
+   {
+      $limit:5
+   }
 
 ])
-
