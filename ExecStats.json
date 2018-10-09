@@ -1,0 +1,180 @@
+//MongoDB executionStats
+
+//SQ1
+"executionStats": {
+	"executionSuccess": true,
+	"nReturned": 11.0,
+	"executionTimeMillis": 4.0,
+	"totalKeysExamined": 0.0,
+	"totalDocsExamined": 5280.0,
+	"executionStages": {
+		"stage": "SUBPLAN",
+		"nReturned": 11.0,
+		"executionTimeMillisEstimate": 0.0,
+		"works": 5282.0,
+		"advanced": 11.0,
+		"needTime": 5270.0,
+		"needYield": 0.0,
+		"saveState": 42.0,
+		"restoreState": 42.0,
+		"isEOF": 1.0,
+		"invalidates": 0.0,
+		"inputStage": {
+			"stage": "COLLSCAN",
+			"filter": {
+				"$or": [{
+					"Id": {
+						"$eq": 2277.0
+					}
+				}, {
+					"ParentId": {
+						"$eq": 2277.0
+					}
+				}]
+			},
+			"nReturned": 11.0,
+			"executionTimeMillisEstimate": 0.0,
+			"works": 5282.0,
+			"advanced": 11.0,
+			"needTime": 5270.0,
+			"needYield": 0.0,
+			"saveState": 42.0,
+			"restoreState": 42.0,
+			"isEOF": 1.0,
+			"invalidates": 0.0,
+			"direction": "forward",
+			"docsExamined": 5280.0
+		}
+	}
+}
+}
+},
+
+//SQ2
+"executionStats": {
+	"executionSuccess": true,
+	"nReturned": 5280.0,
+	"executionTimeMillis": 2.0,
+	"totalKeysExamined": 0.0,
+	"totalDocsExamined": 5280.0,
+	"executionStages": {
+		"stage": "COLLSCAN",
+		"nReturned": 5280.0,
+		"executionTimeMillisEstimate": 0.0,
+		"works": 5282.0,
+		"advanced": 5280.0,
+		"needTime": 1.0,
+		"needYield": 0.0,
+		"saveState": 42.0,
+		"restoreState": 42.0,
+		"isEOF": 1.0,
+		"invalidates": 0.0,
+		"direction": "forward",
+		"docsExamined": 5280.0
+	}
+}
+}
+},
+
+//AQ1
+"executionStats": {
+	"executionSuccess": true,
+	"nReturned": 5280.0,
+	"executionTimeMillis": 2.0,
+	"totalKeysExamined": 0.0,
+	"totalDocsExamined": 5280.0,
+	"executionStages": {
+		"stage": "COLLSCAN",
+		"nReturned": 5280.0,
+		"executionTimeMillisEstimate": 0.0,
+		"works": 5282.0,
+		"advanced": 5280.0,
+		"needTime": 1.0,
+		"needYield": 0.0,
+		"saveState": 42.0,
+		"restoreState": 42.0,
+		"isEOF": 1.0,
+		"invalidates": 0.0,
+		"direction": "forward",
+		"docsExamined": 5280.0
+	}
+}
+}
+},
+
+//AQ2
+"executionStats": {
+	"executionSuccess": true,
+	"nReturned": 137.0,
+	"executionTimeMillis": 3.0,
+	"totalKeysExamined": 0.0,
+	"totalDocsExamined": 5280.0,
+	"executionStages": {
+		"stage": "COLLSCAN",
+		"filter": {
+			"$and": [{
+				"CreationDate": {
+					"$lte": ISODate("2017-03-31T00:00:00.000+0000")
+				}
+			}, {
+				"CreationDate": {
+					"$gte": ISODate("2017-03-01T00:00:00.000+0000")
+				}
+			}]
+		},
+		"nReturned": 137.0,
+		"executionTimeMillisEstimate": 0.0,
+		"works": 5282.0,
+		"advanced": 137.0,
+		"needTime": 5144.0,
+		"needYield": 0.0,
+		"saveState": 42.0,
+		"restoreState": 42.0,
+		"isEOF": 1.0,
+		"invalidates": 0.0,
+		"direction": "forward",
+		"docsExamined": 5280.0
+	}
+}
+}
+},
+
+//AQ3
+"executionStats": {
+	"executionSuccess": true,
+	"nReturned": 812.0,
+	"executionTimeMillis": 3.0,
+	"totalKeysExamined": 0.0,
+	"totalDocsExamined": 5280.0,
+	"executionStages": {
+		"stage": "COLLSCAN",
+		"filter": {
+			"$and": [{
+				"AcceptedAnswerId": {
+					"$exists": true
+				}
+			}, {
+				"$nor": [{
+					"AcceptedAnswerId": {
+						"$eq": null
+					}
+				}]
+			}]
+		},
+		"nReturned": 812.0,
+		"executionTimeMillisEstimate": 0.0,
+		"works": 5282.0,
+		"advanced": 812.0,
+		"needTime": 4469.0,
+		"needYield": 0.0,
+		"saveState": 42.0,
+		"restoreState": 42.0,
+		"isEOF": 1.0,
+		"invalidates": 0.0,
+		"direction": "forward",
+		"docsExamined": 5280.0
+	}
+}
+}
+},
+

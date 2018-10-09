@@ -1,22 +1,50 @@
-//Pre-Processing
+//Pre-Processing Scripts
 
-//Convert String to Int - ViewCount
-//**DO NOT USE**//
-db.posts.find().forEach( function (x) {
-x.ViewCount = parseInt(x.ViewCount);
-db.posts.save(x);
-});
 
-//Convert String to Int - AcceptedAnswerId
-//**DO NOT USE**//
-db.posts.find().forEach( function (x) {
-x.AcceptedAnswerId = parseInt(x.AcceptedAnswerId);
-db.posts.save(x);
-});
+// //Convert String to Int - ViewCount
+// db.posts.find().forEach( function (x) {
+// x.ViewCount = parseInt(x.ViewCount);
+// db.posts.save(x);
+// });
+
+// //Convert String to Int - AcceptedAnswerId
+// db.posts.find().forEach( function (x) {
+// x.AcceptedAnswerId = parseInt(x.AcceptedAnswerId);
+// db.posts.save(x);
+// });
+
+//Convert String to Int - ViewCount // Faster Method
+var bulkOps = [];
+db.posts.find({"ViewCount": {"$exists": true, "$type": 2 }}).forEach(function (doc) { 
+    var newInt = new NumberInt(doc.ViewCount);
+    bulkOps.push(         
+        { 
+            "updateOne": { 
+                "filter": { "_id": doc._id } ,              
+                "update": { "$set": { "ViewCount": newInt } } 
+            }         
+        }           
+    );     
+})
+db.posts.bulkWrite(bulkOps, { "ordered": true });
+
+//Convert String to Int - AcceptedAnswerId // Faster Method
+var bulkOps = [];
+db.posts.find({"AcceptedAnswerId": {"$exists": true, "$type": 2 }}).forEach(function (doc) { 
+    var newInt = new NumberInt(doc.AcceptedAnswerId);
+    bulkOps.push(         
+        { 
+            "updateOne": { 
+                "filter": { "_id": doc._id } ,              
+                "update": { "$set": { "AcceptedAnswerId": newInt } } 
+            }         
+        }           
+    );     
+})
+db.posts.bulkWrite(bulkOps, { "ordered": true });
 
 //Convert String to Int - AnswerCount // Faster Method
 var bulkOps = [];
-
 db.posts.find({"AnswerCount": {"$exists": true, "$type": 2 }}).forEach(function (doc) { 
     var newInt = new NumberInt(doc.AnswerCount);
     bulkOps.push(         
@@ -28,12 +56,10 @@ db.posts.find({"AnswerCount": {"$exists": true, "$type": 2 }}).forEach(function 
         }           
     );     
 })
-
 db.posts.bulkWrite(bulkOps, { "ordered": true });
 
 //Convert String to Int - ParentId // Faster Method
 var bulkOps = [];
-
 db.posts.find({"ParentId": {"$exists": true, "$type": 2 }}).forEach(function (doc) { 
     var newInt = new NumberInt(doc.ParentId);
     bulkOps.push(         
@@ -45,8 +71,7 @@ db.posts.find({"ParentId": {"$exists": true, "$type": 2 }}).forEach(function (do
         }           
     );     
 })
-
 db.posts.bulkWrite(bulkOps, { "ordered": true });
-//Create Compound Index - Id & AcceptedAnswerId
 
+//Create Compound Index - Id & AcceptedAnswerId
 db.posts.createIndex({Id:1, AcceptedAnswerId:1})
