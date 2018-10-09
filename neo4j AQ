@@ -1,5 +1,110 @@
-AQ1
-Match (u:users)-[:Create]-(c:posts)		                                                    
-where c.Id="2"	or c.ParentId="2"					                                      
-return u.Id as users,u.creationDate as creationDateu,u.DisplayName as DisplayName,  
-u.UpVotes as UpVotes,u.DownVotes as DownVotes
+save data in import file of C:\Neo4j\neo4j-community-3.4.8\import\
+
+
+#input posts
+LOAD CSV WITH HEADERS FROM
+'file:///data/Posts.tsv'AS line
+FIELDTERMINATOR '\t'
+WITH line
+CREATE (p:posts { Id: line.Id, ParentId: line.ParentId,CreationDate:line.CreationDate,
+Title:line.Title,ViewCount:toInteger(line.ViewCount),AnswerCount:toInteger(line.AnswerCount),
+OwnerUserId:line.OwnerUserId,FavoriteCount:toInteger(line.FavoriteCount),
+PostTypeId:line.PostTypeId,AcceptedAnswerId:line.AcceptedAnswerId})
+RETURN p.Id AS Id, p.ParentId AS ParentId, size(p.Id) AS size
+
+#input users 
+LOAD CSV WITH HEADERS FROM
+'file:///data/Users.tsv'AS line
+FIELDTERMINATOR '\t'
+WITH line
+CREATE (u:users { Id: line.Id, DisplayName: line.DisplayName,CreationDate:line.CreationDate,
+UpVotes:toInteger(line.UpVotes),DownVotes:toInteger(line.DownVotes)
+})
+RETURN u.Id AS Id, u.DisplayName AS DisplayName
+
+#input tags
+LOAD CSV WITH HEADERS FROM
+'file:///data/Tags.tsv'AS line
+FIELDTERMINATOR '\t'
+WITH line
+CREATE (t:tags { Id: line.Id, TagName:  line.TagName ,
+count:toInteger(line.Count)
+})
+
+
+input votes
+LOAD CSV WITH HEADERS FROM
+'file:///data/Votes.tsv'AS line
+FIELDTERMINATOR '\t'
+WITH line
+CREATE (v:votes { Id: line.Id, PostId:line.PostId ,
+VoteTypeId:line.VoteTypeId,CreationDate:line.CreationDate,UserId :line.UserId
+
+})
+
+#Create indexes
+CREATE INDEX ON posts(Id)
+
+#create connection
+
+MATCH (p:posts),(u:users)
+WHERE p.OwnerUserId = u.Id
+CREATE (u)-[:Create]->(p)
+
+MATCH (p:posts),(u:posts)
+WHERE p.ParentId = u.Id
+CREATE (u)-[:is_question_of]->(p)
+
+MATCH (p:posts),(t:tags)
+WHERE t.TagName in p.Tags
+CREATE (t)-[:is_topic_of]->(p)
+
+MATCH (p:posts),(v:votes)
+WHERE p.Id=v.PostId
+CREATE (p)-[:has_vote]->(v)
+
+match (p:posts),(q:posts)
+where p.AcceptedAnswerId=q.Id
+create (q)-[:is_accepted]->(p)
+#s1
+MATCH (p:users{Id:"1671"})-[*3..4]-(q:users)
+where p.Id<>q.Id
+return q.Id,q.CreationDate, q.UpVotes, q.DownVotes
+S2
+MATCH (t:tags)-[r:is_topic_of]->(p:posts)
+where t.TagName="alphago" and exists(p.Title) AND exists(p.ViewCount)
+return p.Id,p.Title,p.ViewCount
+ORDER BY p.ViewCount DESC
+
+A3
+#find the number of accpeted the anwser in different topic beforeCreationDate<"2018-08-30T00:00:00" of user 4398
+match (p:posts),(c:posts{OwnerUserId:"4398"})
+where c.Id=p.AcceptedAnswerId and p.CreationDate<"2018-08-30T00:00:00"
+unwind p.Tags AS topic
+return topic,count(p)
+order by count(p) desc
+
+#get tags which count number>=4
+ 
+match (p:posts)
+where not exists(p.AcceptedAnswerId) and p.CreationDate<"2018-08-30T00:00:00" and exists(p.Title)
+and ("reinforcement-learning"in p.Tags or"deep-learning"in p.Tags or "machine-learning" in p.Tags or"ai-design"in p.Tags)
+return p.Id, p.Title
+order by p.CreationDate DESC
+limit 5
+
+MATCH (u:users{Id:"4398"})-[*2]-(t:tags),(p:posts)-[:Create]-(u:users{Id:"4398"})
+where EXISTS(p.AcceptedAnswerId),
+return t.TagName, count(p) as num
+order by num desc
+A6
+MATCH (p:users{Id:"4398"})-[*3..4]-(u:users)
+where u.Id<>p.Id
+return u.Id,count(*)as num
+order by num desc
+limit 5
+
+A5
+match (v:votes)-[:is_votinginfo]-(p:posts)-[:is_accepted]-(q:posts)-[*1]-(n:posts)-[*1]-(v1:votes) with q,p,n,v,count(v1)as all
+where not n.Id=p.Id
+return q.Id as question,p.Id as acceptedanwser,count(v) as numofacc,max(all) as numofmax
